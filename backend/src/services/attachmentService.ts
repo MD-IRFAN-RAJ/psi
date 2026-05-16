@@ -1,24 +1,31 @@
 import prisma from '../config/prisma';
-import fs from 'fs';
-import path from 'path';
+import cloudinary from '../config/cloudinary';
 
 export class AttachmentService {
   static async uploadAttachment(taskId: string, file: Express.Multer.File) {
     // Check current attachment count for the task
     const count = await prisma.attachment.count({ where: { taskId } });
     if (count >= 3) {
-      // Delete the uploaded file if limit exceeded
-      fs.unlinkSync(file.path);
       throw new Error('Maximum of 3 attachments allowed per task');
     }
+
+    // Convert buffer to data URI
+    const dataUri = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+
+    const result = await cloudinary.uploader.upload(dataUri, {
+      resource_type: 'auto',
+      folder: 'task_attachments',
+      public_id: undefined,
+    });
 
     return prisma.attachment.create({
       data: {
         taskId,
         fileName: file.originalname,
-        fileUrl: file.path,
+        fileUrl: result.secure_url,
         fileType: file.mimetype,
         fileSize: file.size,
+        filePublicId: result.public_id,
       },
     });
   }
@@ -37,9 +44,14 @@ export class AttachmentService {
       throw new Error('Attachment not found');
     }
 
-    // Delete file from disk
-    if (fs.existsSync(attachment.fileUrl)) {
-      fs.unlinkSync(attachment.fileUrl);
+    // Try to delete from Cloudinary if we have a public id
+    if ((attachment as any).filePublicId) {
+      try {
+        await cloudinary.uploader.destroy((attachment as any).filePublicId, { resource_type: 'auto' });
+      } catch (err) {
+        // Non-fatal: log and continue to remove DB record
+        console.warn('Cloudinary delete failed:', err.message || err);
+      }
     }
 
     await prisma.attachment.delete({ where: { id } });

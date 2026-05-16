@@ -20,13 +20,11 @@ export class AttachmentController {
   static async download(req: Request, res: Response) {
     const id = req.params.id as string;
     const attachment = await AttachmentService.getAttachmentById(id);
-
-    const filePath = path.resolve(attachment.fileUrl);
-    if (!fs.existsSync(filePath)) {
-      return res.status(StatusCodes.NOT_FOUND).json({ error: 'File not found on server' });
+    // Redirect to Cloudinary URL (attachments stored remotely)
+    if (!attachment.fileUrl) {
+      return res.status(StatusCodes.NOT_FOUND).json({ error: 'File URL not available' });
     }
-
-    res.download(filePath, attachment.fileName);
+    res.redirect(attachment.fileUrl);
   }
 
   static async delete(req: Request, res: Response) {

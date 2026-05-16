@@ -138,6 +138,7 @@ model Attachment {
   
   fileName  String   @map("file_name")
   fileUrl   String   @map("file_url")
+  filePublicId String? @map("file_public_id")
   fileType  String   @map("file_type")
   fileSize  Int      @map("file_size_bytes")
   
