@@ -11,7 +11,6 @@ import {
   LifeBuoy,
   Search,
   Bell,
-  User as UserIcon,
   Users,
   LogOut,
   X
@@ -29,6 +28,9 @@ const DashboardLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuthStore();
+  const handleComingSoon = () => {
+    navigate('/coming-soon?feature=Support');
+  };
 
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
@@ -180,9 +182,5 @@ const DashboardLayout: React.FC = () => {
     </div>
   );
 };
-
-  const handleComingSoon = () => {
-    navigate('/coming-soon?feature=Support');
-  };
 
 export default DashboardLayout;

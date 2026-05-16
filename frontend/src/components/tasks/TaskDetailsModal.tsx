@@ -9,7 +9,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Calendar, 
   User, 
   FileText, 
   Download, 
@@ -34,12 +33,6 @@ const statusColors: any = {
   TODO: 'bg-slate-100 text-slate-700 border-slate-200',
   IN_PROGRESS: 'bg-blue-100 text-blue-700 border-blue-200',
   DONE: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-};
-
-const priorityColors: any = {
-  LOW: 'bg-slate-100 text-slate-600',
-  MEDIUM: 'bg-amber-100 text-amber-700',
-  HIGH: 'bg-rose-100 text-rose-700',
 };
 
 interface TaskDetailsModalProps {

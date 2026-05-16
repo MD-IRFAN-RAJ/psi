@@ -33,7 +33,7 @@ type ProfileValues = z.infer<typeof profileSchema>;
 
 const ProfilePage: React.FC = () => {
   const { toast } = useToast();
-  const { user: authUser, setAuth } = useAuthStore();
+  const { setAuth } = useAuthStore();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 

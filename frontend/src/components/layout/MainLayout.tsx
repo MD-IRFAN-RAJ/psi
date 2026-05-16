@@ -1,18 +1,16 @@
 import React from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Layers, 
   Briefcase, 
   ClipboardList, 
-  Trello, 
+  LayoutGrid, 
   Settings, 
   HelpCircle, 
   LifeBuoy,
   Search,
-  Plus,
   Bell,
-  MessageSquare
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,7 +22,6 @@ interface MainLayoutProps {
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuthStore();
 
@@ -33,7 +30,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     { name: 'Issues', icon: Layers, path: '/issues' },
     { name: 'Projects', icon: Briefcase, path: '/projects' },
     { name: 'Backlog', icon: ClipboardList, path: '/backlog' },
-    { name: 'Sprint Board', icon: Trello, path: '/board' },
+    { name: 'Sprint Board', icon: LayoutGrid, path: '/board' },
     { name: 'Settings', icon: Settings, path: '/settings' },
   ];
 

@@ -3,9 +3,7 @@ import {
   User, 
   Bell, 
   Lock, 
-  Shield, 
   Palette, 
-  Globe, 
   CreditCard,
   ChevronRight,
   LogOut

@@ -2,15 +2,11 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { taskService } from '@/api/taskService';
 import { 
-  ChevronDown, 
   Settings2, 
-  MoreVertical,
   Zap,
   Edit2,
   CheckCircle2,
   Calendar as CalendarIcon,
-  TrendingDown,
-  ArrowRight,
   AlertCircle,
   Plus,
   Loader2
@@ -51,8 +47,8 @@ const BacklogPage: React.FC = () => {
       queryFn: projectService.getProjects,
    });
 
-  const completeSprintMutation = useMutation({
-    mutationFn: () => sprintService.updateSprint(activeSprint.id, { status: 'COMPLETED' }),
+   const completeSprintMutation = useMutation({
+      mutationFn: () => sprintService.updateSprint(activeSprint.id, { status: 'COMPLETED' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activeSprint'] });
          queryClient.invalidateQueries({ queryKey: ['sprints'] });
@@ -160,9 +156,9 @@ const BacklogPage: React.FC = () => {
                </Button>
              </>
                 ) : !activeSprint && canManageSprints(user?.role) ? (
-             <Button 
+               <Button 
                 className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-11"
-                onClick={() => setEditModalOpen(true)} // I'll reuse EditSprintModal as a Create modal if I pass null sprint
+                onClick={() => setEditModalOpen(true)}
              >
                 <Plus className="h-4 w-4 mr-2" />
                 Start Sprint

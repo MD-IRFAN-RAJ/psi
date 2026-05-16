@@ -4,13 +4,8 @@ import { taskService } from '@/api/taskService';
 import { useAuthStore } from '@/store/useAuthStore';
 import { 
   Calendar as CalendarIcon, 
-  Clock, 
   AlertCircle, 
-  CheckCircle2, 
-  ArrowRight,
-  MoreHorizontal,
   TrendingUp,
-  Activity
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -259,7 +254,7 @@ const DashboardPage: React.FC = () => {
              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 relative">
                 <div className="absolute left-8 top-10 bottom-10 w-0.5 bg-slate-100"></div>
                 <div className="space-y-8 relative">
-                   {recentActivity.map((task: any, idx) => (
+                   {recentActivity.map((task: any) => (
                      <div key={task.id} className="flex gap-4">
                         <div className={cn(
                           "h-4 w-4 rounded-full border-4 border-white ring-1 ring-slate-100 z-10 shrink-0 mt-1",
