@@ -2,6 +2,8 @@
 
 TaskSuite is a comprehensive task management system designed for teams to manage projects, sprints, and tasks efficiently. It features role-based access control (RBAC), a modern UI, and a scalable backend.
 
+##Swagger Docs 
+- **https://psi-e0x3.onrender.com/api-docs
 ## Features
 
 ### General
