@@ -22,11 +22,7 @@ export const taskService = {
     return response.data;
   },
   uploadAttachment: async (taskId: string, formData: FormData) => {
-    const response = await axiosInstance.post(`/tasks/${taskId}/attachments`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const response = await axiosInstance.post(`/tasks/${taskId}/attachments`, formData);
     return response.data;
   },
   downloadAttachment: async (id: string) => {
