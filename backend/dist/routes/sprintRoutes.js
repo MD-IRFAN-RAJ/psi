@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const sprintController_1 = require("../controllers/sprintController");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const roleMiddleware_1 = require("../middlewares/roleMiddleware");
+const router = (0, express_1.Router)();
+router.post('/', authMiddleware_1.authMiddleware, (0, roleMiddleware_1.roleMiddleware)(['ADMIN', 'CTO', 'MANAGER', 'TEAM_LEAD']), sprintController_1.SprintController.createSprint);
+router.get('/', authMiddleware_1.authMiddleware, sprintController_1.SprintController.listSprints);
+router.get('/active', authMiddleware_1.authMiddleware, sprintController_1.SprintController.getActiveSprint);
+router.patch('/:id', authMiddleware_1.authMiddleware, (0, roleMiddleware_1.roleMiddleware)(['ADMIN', 'CTO', 'MANAGER', 'TEAM_LEAD']), sprintController_1.SprintController.updateSprint);
+exports.default = router;

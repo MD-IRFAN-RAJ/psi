@@ -50,7 +50,8 @@ export class AttachmentService {
         await cloudinary.uploader.destroy((attachment as any).filePublicId, { resource_type: 'auto' });
       } catch (err) {
         // Non-fatal: log and continue to remove DB record
-        console.warn('Cloudinary delete failed:', err.message || err);
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        console.warn('Cloudinary delete failed:', errorMessage);
       }
     }
 
