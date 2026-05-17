@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
+import { apiOriginUrl } from '@/api/axiosInstance';
 
 const profileSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
@@ -61,8 +62,7 @@ const ProfilePage: React.FC = () => {
         password: '',
       });
       if (profile.avatarUrl) {
-        const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3010';
-        setPreviewUrl(`${baseUrl}${profile.avatarUrl}`);
+        setPreviewUrl(`${apiOriginUrl}${profile.avatarUrl}`);
       }
     }
   }, [profile, reset]);

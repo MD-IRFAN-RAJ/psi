@@ -21,6 +21,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { cn } from '@/lib/utils';
 import CreateTaskModal from '@/components/tasks/CreateTaskModal';
 import { hasAnyRole } from '@/lib/rbac';
+import { apiOriginUrl } from '@/api/axiosInstance';
 
 const DashboardLayout: React.FC = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -162,7 +163,7 @@ const DashboardLayout: React.FC = () => {
                 title="Profile Settings"
               >
                 {user?.avatarUrl ? (
-                  <img src={`${import.meta.env.VITE_API_URL || 'http://localhost:3010'}${user.avatarUrl}`} alt="avatar" className="h-full w-full object-cover" />
+                  <img src={`${apiOriginUrl}${user.avatarUrl}`} alt="avatar" className="h-full w-full object-cover" />
                 ) : (
                   <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.firstName}`} alt="avatar" />
                 )}
