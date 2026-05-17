@@ -17,14 +17,18 @@ export const apiOriginUrl = apiBaseUrl.replace(/\/api\/v1$/, '');
 
 const axiosInstance = axios.create({
   baseURL: apiBaseUrl,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 // Add a request interceptor to attach the token
 axiosInstance.interceptors.request.use(
   (config) => {
+    // Let browser/axios set multipart boundaries for FormData payloads.
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
+    } else if (!config.headers['Content-Type']) {
+      config.headers['Content-Type'] = 'application/json';
+    }
+
     const token = localStorage.getItem('accessToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
