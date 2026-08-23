@@ -7,6 +7,107 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  passwordHash       String              @map("password_hash")
+  firstName          String              @map("first_name")
+  lastName           String              @map("last_name")
+  phoneNumber        String?             @map("phone_number")
+  avatarUrl          String?             @map("avatar_url")
+  role               Role                @default(TEAM_MEMBER)
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  assignmentsMade    ProjectAssignment[] @relation("ProjectAssignmentAssignedBy")
+  projectAssignments ProjectAssignment[] @relation("ProjectAssignmentUser")
+  assignedTasks      Task[]              @relation("TaskAssignee")
+  createdTasks       Task[]              @relation("TaskAuthor")
+
+  @@map("users")
+}
+
+model Project {
+  id              String              @id @default(uuid())
+  name            String
+  key             String              @unique
+  description     String?
+  status          String              @default("ON_TRACK")
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @updatedAt @map("updated_at")
+  assignedMembers ProjectAssignment[]
+  sprints         Sprint[]
+  tasks           Task[]
+
+  @@map("projects")
+}
+
+model ProjectAssignment {
+  id           String                @id @default(uuid())
+  role         ProjectAssignmentRole
+  projectId    String                @map("project_id")
+  userId       String                @map("user_id")
+  assignedById String?               @map("assigned_by_id")
+  createdAt    DateTime              @default(now()) @map("created_at")
+  assignedBy   User?                 @relation("ProjectAssignmentAssignedBy", fields: [assignedById], references: [id])
+  project      Project               @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user         User                  @relation("ProjectAssignmentUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId, role])
+  @@map("project_assignments")
+}
+
+model Sprint {
+  id        String   @id @default(uuid())
+  name      String
+  goal      String?
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+  status    String   @default("ACTIVE")
+  projectId String   @map("project_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  project   Project  @relation(fields: [projectId], references: [id])
+  tasks     Task[]
+
+  @@map("sprints")
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    Priority     @default(MEDIUM)
+  dueDate     DateTime?    @map("due_date")
+  projectId   String?      @map("project_id")
+  sprintId    String?      @map("sprint_id")
+  authorId    String       @map("author_id")
+  assigneeId  String?      @map("assignee_id")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  attachments Attachment[]
+  assignee    User?        @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  author      User         @relation("TaskAuthor", fields: [authorId], references: [id])
+  project     Project?     @relation(fields: [projectId], references: [id])
+  sprint      Sprint?      @relation(fields: [sprintId], references: [id])
+
+  @@map("tasks")
+}
+
+model Attachment {
+  id           String   @id @default(uuid())
+  taskId       String   @map("task_id")
+  fileName     String   @map("file_name")
+  fileUrl      String   @map("file_url")
+  filePublicId String?  @map("file_public_id")
+  fileType     String   @map("file_type")
+  fileSize     Int      @map("file_size_bytes")
+  uploadedAt   DateTime @default(now()) @map("uploaded_at")
+  task         Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("attachments")
+}
+
 enum Role {
   ADMIN
   CTO
@@ -30,119 +131,4 @@ enum Priority {
   LOW
   MEDIUM
   HIGH
-}
-
-model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  passwordHash  String   @map("password_hash")
-  firstName     String   @map("first_name")
-  lastName      String   @map("last_name")
-  phoneNumber   String?  @map("phone_number")
-  avatarUrl     String?  @map("avatar_url")
-  role          Role     @default(TEAM_MEMBER)
-  createdTasks  Task[]   @relation("TaskAuthor")
-  assignedTasks Task[]   @relation("TaskAssignee")
-  projectAssignments ProjectAssignment[] @relation("ProjectAssignmentUser")
-  assignmentsMade ProjectAssignment[] @relation("ProjectAssignmentAssignedBy")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-
-  @@map("users")
-}
-
-model Project {
-  id          String   @id @default(uuid())
-  name        String
-  key         String   @unique
-  description String?  @db.Text
-  status      String   @default("ON_TRACK")
-  tasks       Task[]
-  sprints     Sprint[]
-  assignedMembers ProjectAssignment[]
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  @@map("projects")
-}
-
-model ProjectAssignment {
-  id               String               @id @default(uuid())
-  role             ProjectAssignmentRole
-
-  projectId         String              @map("project_id")
-  project           Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
-  userId            String              @map("user_id")
-  user              User                @relation("ProjectAssignmentUser", fields: [userId], references: [id], onDelete: Cascade)
-
-  assignedById      String?             @map("assigned_by_id")
-  assignedBy        User?               @relation("ProjectAssignmentAssignedBy", fields: [assignedById], references: [id], onDelete: SetNull)
-
-  createdAt         DateTime            @default(now()) @map("created_at")
-
-  @@unique([projectId, userId, role])
-  @@map("project_assignments")
-}
-
-model Sprint {
-  id          String   @id @default(uuid())
-  name        String
-  goal        String?
-  startDate   DateTime @map("start_date")
-  endDate     DateTime @map("end_date")
-  status      String   @default("ACTIVE") // ACTIVE, COMPLETED
-  
-  projectId   String   @map("project_id")
-  project     Project  @relation(fields: [projectId], references: [id])
-  
-  tasks       Task[]
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  @@map("sprints")
-}
-
-model Task {
-  id          String     @id @default(uuid())
-  title       String
-  description String?    @db.Text
-  status      TaskStatus @default(TODO)
-  priority    Priority   @default(MEDIUM)
-  dueDate     DateTime?  @map("due_date")
-  
-  projectId   String?    @map("project_id")
-  project     Project?   @relation(fields: [projectId], references: [id])
-  
-  sprintId    String?    @map("sprint_id")
-  sprint      Sprint?    @relation(fields: [sprintId], references: [id])
-  
-  authorId    String     @map("author_id")
-  author      User       @relation("TaskAuthor", fields: [authorId], references: [id])
-  
-  assigneeId  String?    @map("assignee_id")
-  assignee    User?      @relation("TaskAssignee", fields: [assigneeId], references: [id])
-  
-  attachments Attachment[]
-  
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @updatedAt @map("updated_at")
-
-  @@map("tasks")
-}
-
-model Attachment {
-  id        String   @id @default(uuid())
-  taskId    String   @map("task_id")
-  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  
-  fileName  String   @map("file_name")
-  fileUrl   String   @map("file_url")
-  filePublicId String? @map("file_public_id")
-  fileType  String   @map("file_type")
-  fileSize  Int      @map("file_size_bytes")
-  
-  uploadedAt DateTime @default(now()) @map("uploaded_at")
-
-  @@map("attachments")
 }
