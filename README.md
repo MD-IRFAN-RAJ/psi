@@ -2,8 +2,8 @@
 
 TaskSuite is a comprehensive task management system designed for teams to manage projects, sprints, and tasks efficiently. It features role-based access control (RBAC), a modern UI, and a scalable backend.
 
-##Swagger Docs 
-- **https://psi-e0x3.onrender.com/api-docs
+## Swagger Docs 
+- **URL**: [https://psi-e0x3.onrender.com/api-docs](https://psi-e0x3.onrender.com/api-docs)
 ## Features
 
 ### General
@@ -12,7 +12,7 @@ TaskSuite is a comprehensive task management system designed for teams to manage
 - **Responsive Design**: Optimized for desktop and mobile.
 
 ### Task Management
-- Create,Read, update, and delete tasks.
+- Create, read, update, and delete tasks.
 - Assign tasks to team members.
 - Track task progress with statuses (TODO, IN_PROGRESS, DONE).
 
@@ -57,8 +57,9 @@ TaskSuite is a comprehensive task management system designed for teams to manage
    ```
 
 2. Set up environment variables:
-   - add a .env directory in the same folder as .env.example
+   - Create a `.env` file in the `backend` folder (based on `.env.example`).
    - Copy `.env.example` to `.env` and update values.
+   - Note: To prevent the backend from sleeping on free hosting platforms (like Render), ensure `SERVER_URL` is set to your public backend URL in the `.env` file.
 
 3. Start the services:
    ```bash
